@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">todoList</string>
+    <string name="search_hint">Insira o nome do item que deseja pesquisar</string>
+</resources>
