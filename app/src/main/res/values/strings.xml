@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">todoList</string>
+
     <string name="search_hint">Insira o nome do item que deseja pesquisar</string>
+    <string name="datePicker_hint">Select date</string>
+
+    <string name="add_item_dialog_title">ADD ITEM</string>
+
+    <string name="todoItem_title">Title</string>
+    <string name="todoItem_deadLine">DeadLine</string>
+    <string name="todoItem_description">Description</string>
+
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
 </resources>
