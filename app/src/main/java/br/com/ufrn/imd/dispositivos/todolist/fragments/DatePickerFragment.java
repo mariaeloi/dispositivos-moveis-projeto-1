@@ -1,5 +1,6 @@
 package br.com.ufrn.imd.dispositivos.todolist.fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -52,13 +53,18 @@ public class DatePickerFragment extends DialogFragment
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Fragment parentFragment = getParentFragment();
+        Activity parentActivity = getActivity();
 
-        if(parentFragment instanceof OnDateSet) {
+        OnDateSet listener = null;
+        if(parentFragment instanceof OnDateSet)
+            listener = (OnDateSet) parentFragment;
+        else if(parentActivity instanceof OnDateSet)
+            listener = (OnDateSet) parentActivity;
+
+        if(listener != null){
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                Date date = formatter.parse(month+"/"+dayOfMonth+"/"+year);
-
-                OnDateSet listener = (OnDateSet) parentFragment;
+                Date date = formatter.parse((month+1)+"/"+dayOfMonth+"/"+year);
                 listener.setDate(date);
             } catch (ParseException e) {
                 e.printStackTrace();
