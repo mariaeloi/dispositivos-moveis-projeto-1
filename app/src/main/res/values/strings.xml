@@ -12,4 +12,8 @@
 
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
+
+    <string name="button_visitar_site">SITE</string>
+    <string name="button_sair">SAIR</string>
+
 </resources>
