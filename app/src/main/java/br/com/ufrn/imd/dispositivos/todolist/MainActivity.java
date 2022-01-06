@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SearchView;
@@ -62,7 +64,6 @@ public class MainActivity extends AppCompatActivity
         rvTodoList =  findViewById(R.id.rvTodoList);
         rvTodoList.setLayoutManager(new LinearLayoutManager(this));
         rvTodoList.setAdapter(adapter);
-
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -90,6 +91,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(View view, int position) {
+        TodoItem itemSelected = (TodoItem) todoItemList.get(position);
+        Intent it = new Intent(this,EditActivity.class);
+        it.putExtra("todoItem",itemSelected);
+        startActivity(it);
+        System.out.println( itemSelected.getTitle());
+
 
     }
 
@@ -103,4 +110,5 @@ public class MainActivity extends AppCompatActivity
         todoItemListCopy.add(todoItem);
         adapter.notifyDataSetChanged();
     }
+
 }
