@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,65 +15,70 @@ import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import br.com.ufrn.imd.dispositivos.todolist.R;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 
 /**
- * Use the {@link TodoItemDialog#newInstance} factory method to
+ * A simple {@link Fragment} subclass.
+ * Use the {@link EditItemFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TodoItemDialog extends DialogFragment
-        implements DatePickerFragment.OnDateSet {
-
-    public static final String DIALOG_TAG = "addTodoItem";
+public class EditItemFragment extends DialogFragment implements DatePickerFragment.OnDateSet{
+    public static final String DIALOG_TAG = "editTodoItem";
 
     private EditText etTitle;
     private EditText etDescription;
-
+    private Button btnSalvar;
+    private Button btnCancelar;
     private Button btnDeadLine;
-    private Button btnSave;
-    private Button btnCancel;
-
-    private TodoItem todoItem;
-
-    public TodoItemDialog() {
+    private TodoItem itemSelected;
+    public EditItemFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment.
-     *
-     * @return A new instance of fragment TodoItemDialog.
-     */
-    public static TodoItemDialog newInstance() {
-        TodoItemDialog fragment = new TodoItemDialog();
+
+    public static EditItemFragment newInstance(TodoItem itemSelect) {
+        EditItemFragment fragment = new EditItemFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("itemSelect",itemSelect);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        todoItem = new TodoItem();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layout = inflater.inflate(R.layout.fragment_todo_item_dialog, container, false);
-        getDialog().setTitle("ADD ITEM");
+
+        Bundle args = getArguments();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
+        View layout = inflater.inflate(R.layout.fragment_edit_item, container, false);
+        getDialog().setTitle("EDIT ITEM");
+
+        itemSelected = (TodoItem) args.getSerializable("itemSelect");
 
         etTitle = layout.findViewById(R.id.etTitle);
         etDescription = layout.findViewById(R.id.etDescription);
 
+        etTitle.setText(itemSelected.getTitle());
+        etDescription.setText(itemSelected.getDescription());
+
+        btnSalvar = layout.findViewById(R.id.btnSave);
+        btnCancelar = layout.findViewById(R.id.btnCancel);
         btnDeadLine = layout.findViewById(R.id.btnDeadLine);
-        btnSave = layout.findViewById(R.id.btnSave);
-        btnCancel = layout.findViewById(R.id.btnCancel);
+
+        btnDeadLine.setText(formatter.format(itemSelected.getDeadLine()));
 
         btnDeadLine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,28 +88,27 @@ public class TodoItemDialog extends DialogFragment
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        btnSalvar.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTodoItem();
+                updateItem();
+                dismiss();
             }
-        });
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        }));
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // close dialog
                 dismiss();
             }
         });
 
-        return layout;
+        return  layout;
     }
 
-    public void saveTodoItem() {
+    public void updateItem(){
         Activity activity = getActivity();
 
-        if(activity instanceof OnSaveTodoItem) {
+        if(activity instanceof OnUpdateItem){
             String title, description, deadline;
 
             title = etTitle.getText().toString();
@@ -118,32 +124,27 @@ public class TodoItemDialog extends DialogFragment
                 return;
             }
 
-            todoItem.setTitle(title);
-            todoItem.setDescription(description);
-
+            itemSelected.setTitle(title);
+            itemSelected.setDescription(description);
             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             try {
-                todoItem.setDeadLine(formatter.parse(deadline));
+                itemSelected.setDeadLine(formatter.parse(deadline));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            OnSaveTodoItem listener = (OnSaveTodoItem) activity;
-            listener.saveTodoItem(todoItem);
+            OnUpdateItem listener = (OnUpdateItem) activity;
+            listener.updateItem(itemSelected);
 
         }
-
-        // close dialog
-        dismiss();
     }
-
+    public interface OnUpdateItem{
+        void updateItem(TodoItem todoItem);
+    }
     @Override
     public void setDate(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         btnDeadLine.setText(formatter.format(date));
     }
 
-    public interface OnSaveTodoItem {
-        void saveTodoItem(TodoItem todoItem);
-    }
 }

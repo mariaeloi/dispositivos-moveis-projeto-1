@@ -8,22 +8,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.SearchView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 
 public class MainActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem {
+        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem,EditItemFragment.OnUpdateItem {
 
     FragmentManager fragmentManager;
     RecyclerViewAdapter adapter;
@@ -91,11 +94,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(View view, int position) {
+
+
         TodoItem itemSelected = (TodoItem) todoItemList.get(position);
-        Intent it = new Intent(this,EditActivity.class);
-        it.putExtra("todoItem",itemSelected);
-        startActivity(it);
-        System.out.println( itemSelected.getTitle());
+
+        EditItemFragment editItemFragment = EditItemFragment.newInstance(itemSelected);
+        editItemFragment.show(fragmentManager, TodoItemDialog.DIALOG_TAG);
 
 
     }
@@ -111,4 +115,13 @@ public class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void updateItem(TodoItem todoItem) {
+        int id = todoItem.getId()-1;
+        System.out.println(id);
+        todoItemList.set(id, todoItem);
+        todoItemListCopy.set(id,todoItem);
+        adapter.notifyDataSetChanged();
+
+    }
 }
