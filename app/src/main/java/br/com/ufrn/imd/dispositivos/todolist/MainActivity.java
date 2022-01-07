@@ -11,10 +11,12 @@ import android.os.Bundle;
 
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -27,7 +29,7 @@ import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 
 public class MainActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem,EditItemFragment.OnUpdateItem {
+        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem, EditItemFragment.OnUpdateItem, EditItemFragment.OnDeleteItem {
 
     FragmentManager fragmentManager;
     RecyclerViewAdapter adapter;
@@ -118,9 +120,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateItem(TodoItem todoItem) {
         int id = todoItem.getId() - 1;
-        System.out.println(id);
+        Log.d("id", "id: " + id);
         todoItemList.set(id, todoItem);
         todoItemListCopy.set(id, todoItem);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void deleteItem(TodoItem todoItem)
+    {
+        int id = todoItem.getId() - 1;
+        Log.d("id", "id: " + id);
+        todoItemList.remove(id);
+        todoItemListCopy.remove(id);
         adapter.notifyDataSetChanged();
     }
 

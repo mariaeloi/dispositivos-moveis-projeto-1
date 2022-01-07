@@ -33,13 +33,14 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
     private EditText etTitle;
     private EditText etDescription;
     private Button btnSalvar;
+    private Button btnDelete;
     private Button btnCancelar;
     private Button btnDeadLine;
     private TodoItem itemSelected;
+
     public EditItemFragment() {
         // Required empty public constructor
     }
-
 
     public static EditItemFragment newInstance(TodoItem itemSelect) {
         EditItemFragment fragment = new EditItemFragment();
@@ -75,6 +76,7 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
         etDescription.setText(itemSelected.getDescription());
 
         btnSalvar = layout.findViewById(R.id.btnSave);
+        btnDelete = layout.findViewById(R.id.btnDelete);
         btnCancelar = layout.findViewById(R.id.btnCancel);
         btnDeadLine = layout.findViewById(R.id.btnDeadLine);
 
@@ -95,9 +97,18 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
                 dismiss();
             }
         }));
+
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItem();
                 dismiss();
             }
         });
@@ -138,9 +149,24 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
 
         }
     }
+
+    public void deleteItem() {
+        Activity activity = getActivity();
+
+        if (activity instanceof OnDeleteItem) {
+            OnDeleteItem listener = (OnDeleteItem) activity;
+            listener.deleteItem(itemSelected);
+        }
+    }
+
     public interface OnUpdateItem{
         void updateItem(TodoItem todoItem);
     }
+
+    public interface OnDeleteItem{
+        void deleteItem(TodoItem todoItem);
+    }
+
     @Override
     public void setDate(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
