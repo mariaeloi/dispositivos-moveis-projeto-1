@@ -54,17 +54,17 @@ public class MainActivity extends AppCompatActivity
         todoItemList = new ArrayList<>();
         todoItemListCopy = new ArrayList<>();
 
-        todoItemList.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
-        todoItemList.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
-        todoItemList.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da  Bel", new Date()));
-        todoItemList.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
-        todoItemList.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
-
-        todoItemListCopy.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
-        todoItemListCopy.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
-        todoItemListCopy.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da   Bel", new Date()));
-        todoItemListCopy.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
-        todoItemListCopy.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
+//        todoItemList.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
+//        todoItemList.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
+//        todoItemList.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da  Bel", new Date()));
+//        todoItemList.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
+//        todoItemList.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
+//
+//        todoItemListCopy.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
+//        todoItemListCopy.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
+//        todoItemListCopy.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da   Bel", new Date()));
+//        todoItemListCopy.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
+//        todoItemListCopy.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
 
@@ -109,7 +109,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void saveTodoItem(TodoItem todoItem) {
         // set TodoItem id
-        Integer id = todoItemList.get(todoItemList.size()-1).getId() + 1;
+        Integer id;
+        if (todoItemList.size() == 0) {
+            id = 1;
+        }
+        else {
+            id = todoItemList.get(todoItemList.size() - 1).getId() + 1;
+        }
+
         todoItem.setId(id);
 
         todoItemList.add(todoItem);
