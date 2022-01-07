@@ -129,11 +129,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void deleteItem(TodoItem todoItem)
     {
-        int id = todoItem.getId() - 1;
-        Log.d("id", "id: " + id);
-        todoItemList.remove(id);
-        todoItemListCopy.remove(id);
+        int id = todoItem.getId();
+        todoItemList.remove(id-1);
+        todoItemListCopy.remove(id-1);
+        updateIndex(id);
         adapter.notifyDataSetChanged();
+    }
+
+    private void updateIndex(int initialId){
+        for (int i=initialId+1; i<=todoItemList.size()+1; i++) {
+            TodoItem item = todoItemList.get(i-2);
+            item.setId(i-1);
+            todoItemList.set(i-2, item);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
