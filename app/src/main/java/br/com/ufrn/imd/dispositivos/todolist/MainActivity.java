@@ -6,11 +6,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.os.Bundle;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,17 +18,16 @@ import android.widget.SearchView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 
 public class MainActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem {
+        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem,EditItemFragment.OnUpdateItem {
 
     FragmentManager fragmentManager;
     RecyclerViewAdapter adapter;
@@ -73,7 +72,6 @@ public class MainActivity extends AppCompatActivity
         rvTodoList =  findViewById(R.id.rvTodoList);
         rvTodoList.setLayoutManager(new LinearLayoutManager(this));
         rvTodoList.setAdapter(adapter);
-
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -98,10 +96,12 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
     @Override
     public void onItemClick(View view, int position) {
+        TodoItem itemSelected = (TodoItem) todoItemList.get(position);
 
+        EditItemFragment editItemFragment = EditItemFragment.newInstance(itemSelected);
+        editItemFragment.show(fragmentManager, TodoItemDialog.DIALOG_TAG);
     }
 
     @Override
@@ -116,11 +116,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void updateItem(TodoItem todoItem) {
+        int id = todoItem.getId() - 1;
+        System.out.println(id);
+        todoItemList.set(id, todoItem);
+        todoItemListCopy.set(id, todoItem);
+        adapter.notifyDataSetChanged();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     private void goToUrl (String url) {
         Uri uriUrl = Uri.parse(url);
         Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
