@@ -1,23 +1,24 @@
 package br.com.ufrn.imd.dispositivos.todolist;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
+
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+//        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -91,17 +96,12 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
     @Override
     public void onItemClick(View view, int position) {
-
-
         TodoItem itemSelected = (TodoItem) todoItemList.get(position);
 
         EditItemFragment editItemFragment = EditItemFragment.newInstance(itemSelected);
         editItemFragment.show(fragmentManager, TodoItemDialog.DIALOG_TAG);
-
-
     }
 
     @Override
@@ -117,11 +117,40 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void updateItem(TodoItem todoItem) {
-        int id = todoItem.getId()-1;
+        int id = todoItem.getId() - 1;
         System.out.println(id);
         todoItemList.set(id, todoItem);
-        todoItemListCopy.set(id,todoItem);
+        todoItemListCopy.set(id, todoItem);
         adapter.notifyDataSetChanged();
+    }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    private void goToUrl (String url) {
+        Uri uriUrl = Uri.parse(url);
+        Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+        startActivity(launchBrowser);
+    }
+
+    public void onComposeAction(MenuItem mi) {
+        new AlertDialog.Builder(this)
+                .setTitle("Membros da equipe")
+                .setMessage(" Maria Eduarda \n Fernando Ferreira \n André Herman \n Italo Silva")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(R.string.button_visitar_site, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToUrl("https://github.com/mariaeloi/dispositivos-moveis-projeto-1");
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(R.string.button_sair, null)
+                .show();
     }
 }
