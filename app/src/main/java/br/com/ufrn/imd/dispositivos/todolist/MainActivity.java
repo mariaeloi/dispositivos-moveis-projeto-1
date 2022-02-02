@@ -11,10 +11,12 @@ import android.os.Bundle;
 
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -27,7 +29,7 @@ import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 
 public class MainActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem,EditItemFragment.OnUpdateItem {
+        implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem, EditItemFragment.OnUpdateItem, EditItemFragment.OnDeleteItem {
 
     FragmentManager fragmentManager;
     RecyclerViewAdapter adapter;
@@ -52,17 +54,17 @@ public class MainActivity extends AppCompatActivity
         todoItemList = new ArrayList<>();
         todoItemListCopy = new ArrayList<>();
 
-        todoItemList.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
-        todoItemList.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
-        todoItemList.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da  Bel", new Date()));
-        todoItemList.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
-        todoItemList.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
-
-        todoItemListCopy.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
-        todoItemListCopy.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
-        todoItemListCopy.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da   Bel", new Date()));
-        todoItemListCopy.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
-        todoItemListCopy.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
+//        todoItemList.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
+//        todoItemList.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
+//        todoItemList.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da  Bel", new Date()));
+//        todoItemList.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
+//        todoItemList.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
+//
+//        todoItemListCopy.add(new TodoItem(1, "Atividade de SO", "video aula", new Date()));
+//        todoItemListCopy.add(new TodoItem(2, "Atividade de Dispositivos moveis", "este trabalho", new Date()));
+//        todoItemListCopy.add(new TodoItem(3, "Atividade de Levantamento de requisitos", "Atividade da   Bel", new Date()));
+//        todoItemListCopy.add(new TodoItem(4, "Atividade de Processos de Software", "Atividade do Eiji", new Date()));
+//        todoItemListCopy.add(new TodoItem(5, "Atividade de MicroServiços", "Atividade do Fred", new Date()));
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
 
@@ -107,7 +109,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void saveTodoItem(TodoItem todoItem) {
         // set TodoItem id
-        Integer id = todoItemList.get(todoItemList.size()-1).getId() + 1;
+        Integer id;
+        if (todoItemList.size() == 0) {
+            id = 1;
+        }
+        else {
+            id = todoItemList.get(todoItemList.size() - 1).getId() + 1;
+        }
+
         todoItem.setId(id);
 
         todoItemList.add(todoItem);
@@ -118,10 +127,28 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void updateItem(TodoItem todoItem) {
         int id = todoItem.getId() - 1;
-        System.out.println(id);
+        Log.d("id", "id: " + id);
         todoItemList.set(id, todoItem);
         todoItemListCopy.set(id, todoItem);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void deleteItem(TodoItem todoItem)
+    {
+        int id = todoItem.getId();
+        todoItemList.remove(id-1);
+        todoItemListCopy.remove(id-1);
+        updateIndex(id);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void updateIndex(int initialId){
+        for (int i=initialId+1; i<=todoItemList.size()+1; i++) {
+            TodoItem item = todoItemList.get(i-2);
+            item.setId(i-1);
+            todoItemList.set(i-2, item);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

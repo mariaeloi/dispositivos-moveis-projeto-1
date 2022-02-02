@@ -11,6 +11,7 @@
     <string name="todoItem_description">Description</string>
 
     <string name="button_save">Save</string>
+    <string name="button_delete">Delete</string>
     <string name="button_cancel">Cancel</string>
 
     <string name="button_visitar_site">SITE</string>
