@@ -7,11 +7,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
-        android:id="@+id/textView5"
-        android:layout_width="366dp"
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
         android:layout_height="129dp"
         android:gravity="center_vertical"
-        android:text="LOGIN"
+        android:text="CADASTRAR"
         android:textAlignment="center" />
 
     <TextView
@@ -49,13 +49,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/goToCadastrarBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="cadastrar" />
+        android:text="Confirmar Cadastro" />
 
 </LinearLayout>
