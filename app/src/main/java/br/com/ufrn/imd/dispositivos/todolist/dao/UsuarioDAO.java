@@ -98,4 +98,15 @@ public class UsuarioDAO {
         return true;
 
     }
+
+    public int usuariosLogados() {
+        String sql = "SELECT * FROM "
+                +DBHelper.TABELA_USUARIO;
+
+        Cursor c = le.rawQuery(sql, null);
+
+        int count= c.getCount();
+        c.close();
+        return count;
+    }
 }

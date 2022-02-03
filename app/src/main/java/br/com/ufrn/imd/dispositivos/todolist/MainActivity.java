@@ -1,5 +1,7 @@
 package br.com.ufrn.imd.dispositivos.todolist;
 
+import static android.view.View.INVISIBLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordET;
     private Button cadastrarUserBtn;
     private Button loginBtn;
-
+    UsuarioDAO usuarioDAO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,20 +30,23 @@ public class MainActivity extends AppCompatActivity {
         passwordET = findViewById(R.id.cadastrarPasswordTV);
         cadastrarUserBtn = findViewById(R.id.goToCadastrarBtn);
         loginBtn = findViewById(R.id.confimarCadastroBtn);
-
-        cadastrarUserBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
-                startActivity(intent);
-            }
-        });
+        usuarioDAO = new UsuarioDAO(getApplicationContext());
+        if(usuarioDAO.usuariosLogados() >= 1){
+            cadastrarUserBtn.setVisibility(INVISIBLE);
+        } else {
+            cadastrarUserBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         loginBtn.setOnClickListener(v -> {
             String username = usernameET.getText().toString();
             String password = passwordET.getText().toString();
             if(!username.isEmpty() && username != null && !password.isEmpty() && password != null){
-                UsuarioDAO usuarioDAO = new UsuarioDAO(getApplicationContext());
                 Usuario usuario = new Usuario();
                 usuario.setUsername(username);
                 usuario.setPassword(password);
@@ -53,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Verifique suas credenciais!", Toast.LENGTH_SHORT).show();
                 }
 
-            }
+            }else {
+                Toast.makeText(getApplicationContext(), "Preencha todos os campos!", Toast.LENGTH_SHORT).show();            }
 
         });
 
