@@ -7,24 +7,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_height="129dp"
         android:gravity="center_vertical"
-        android:text="LOGIN"
+        android:text="CADASTRAR"
         android:textAlignment="center" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:text="username" />
 
     <EditText
         android:id="@+id/cadastrarUsernameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName" />
 
@@ -32,35 +33,22 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="password" />
 
     <EditText
         android:id="@+id/cadastrarPasswordTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPassword" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="11" />
 
     <Button
         android:id="@+id/confimarCadastroBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/goToCadastrarBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="cadastrar" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="11" />
+        android:layout_marginTop="64dp"
+        android:text="Confirmar Cadastro" />
 
 </LinearLayout>
