@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -25,6 +26,7 @@ import java.util.List;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
+import br.com.ufrn.imd.dispositivos.todolist.dao.TodoItemDAO;
 
 public class TarefaActivity extends AppCompatActivity
         implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem, EditItemFragment.OnUpdateItem, EditItemFragment.OnDeleteItem {
@@ -35,6 +37,7 @@ public class TarefaActivity extends AppCompatActivity
     RecyclerView rvTodoList;
     List<TodoItem> todoItemList;
     List<TodoItem> todoItemListCopy;
+    TodoItemDAO todoItemDAO;
 
     private FloatingActionButton facbnewItem;
 
@@ -51,12 +54,18 @@ public class TarefaActivity extends AppCompatActivity
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
 
-        adapter = new RecyclerViewAdapter(this, todoItemList, todoItemListCopy);
-        adapter.setClickListener(this);
+
 
         rvTodoList =  findViewById(R.id.rvTodoList);
         rvTodoList.setLayoutManager(new LinearLayoutManager(this));
         rvTodoList.setAdapter(adapter);
+        todoItemDAO = new TodoItemDAO(getApplicationContext());
+
+        todoItemList.addAll(todoItemDAO.carregar());
+        todoItemListCopy.addAll(todoItemList);
+
+        adapter = new RecyclerViewAdapter(this, todoItemList, todoItemListCopy);
+        adapter.setClickListener(this);
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -92,6 +101,8 @@ public class TarefaActivity extends AppCompatActivity
     @Override
     public void saveTodoItem(TodoItem todoItem) {
         // set TodoItem id
+
+
         Integer id;
         if (todoItemList.size() == 0) {
             id = 1;
@@ -100,11 +111,14 @@ public class TarefaActivity extends AppCompatActivity
             id = todoItemList.get(todoItemList.size() - 1).getId() + 1;
         }
 
-        todoItem.setId(id);
 
-        todoItemList.add(todoItem);
-        todoItemListCopy.add(todoItem);
-        adapter.notifyDataSetChanged();
+        todoItem.setId(id);
+        if( todoItemDAO.create(todoItem)){
+            todoItemList.add(todoItem);
+            todoItemListCopy.add(todoItem);
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
