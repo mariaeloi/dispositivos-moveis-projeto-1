@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.content.DialogInterface;
@@ -16,11 +17,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
@@ -35,6 +47,7 @@ public class TarefaActivity extends AppCompatActivity
     RecyclerView rvTodoList;
     List<TodoItem> todoItemList;
     List<TodoItem> todoItemListCopy;
+    TextView tvClima;
 
     private FloatingActionButton facbnewItem;
 
@@ -50,6 +63,7 @@ public class TarefaActivity extends AppCompatActivity
         todoItemListCopy = new ArrayList<>();
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
+        tvClima = findViewById(R.id.tvClima);
 
         adapter = new RecyclerViewAdapter(this, todoItemList, todoItemListCopy);
         adapter.setClickListener(this);
@@ -79,6 +93,11 @@ public class TarefaActivity extends AppCompatActivity
                 todoItemDialog.show(fragmentManager, TodoItemDialog.DIALOG_TAG);
             }
         });
+
+        // consumir API de clima
+        String url = "https://api.open-meteo.com/v1/forecast?latitude=-5.81&longitude=-35.26&hourly=temperature_2m";
+        ClimaAPI clima = new ClimaAPI();
+        clima.execute(url);
     }
 
     @Override
@@ -157,5 +176,47 @@ public class TarefaActivity extends AppCompatActivity
                 })
                 .setNegativeButton(R.string.button_sair, null)
                 .show();
+    }
+
+    class ClimaAPI extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            InputStream is = null;
+            InputStreamReader isr = null;
+            StringBuffer buffer = null;
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                is = conn.getInputStream();
+                isr = new InputStreamReader(is);
+                BufferedReader reader = new BufferedReader(isr);
+                buffer = new StringBuffer();
+                String linha = "";
+
+                while ((linha = reader.readLine()) != null) {
+                    buffer.append(linha);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            return buffer.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            String result = "";
+
+            try {
+                JSONObject jo = new JSONObject(s);
+                result = jo.getJSONObject("hourly").getJSONArray("temperature_2m").getString(0);
+            }
+            catch (Exception e) {
+                e.printStackTrace();;
+            }
+            tvClima.setText("Temperatura em Natal: " + result + "ºC");
+        }
     }
 }
