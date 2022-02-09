@@ -62,7 +62,7 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
         // Inflate the layout for this fragment
 
         Bundle args = getArguments();
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         View layout = inflater.inflate(R.layout.fragment_edit_item, container, false);
         getDialog().setTitle("EDIT ITEM");

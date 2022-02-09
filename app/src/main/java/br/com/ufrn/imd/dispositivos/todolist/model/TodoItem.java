@@ -58,9 +58,5 @@ public class TodoItem implements Serializable {
     public void setDeadLine(Date deadLine) {
         this.deadLine = deadLine;
     }
-    public void setDeadLine(String deadLine) throws ParseException {
-        Date date = new SimpleDateFormat("MM/dd/yyyy").parse(deadLine);
 
-        this.deadLine = date;
-    }
 }

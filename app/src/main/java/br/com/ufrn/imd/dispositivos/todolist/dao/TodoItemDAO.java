@@ -19,7 +19,7 @@ public class TodoItemDAO {
 
     private final SQLiteDatabase escreve;
     private final SQLiteDatabase le;
-    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
 
     public TodoItemDAO(Context context){
@@ -31,6 +31,7 @@ public class TodoItemDAO {
     public boolean create (TodoItem todoItem) {
 
         ContentValues cv = new ContentValues();
+        cv.put("id",todoItem.getId());
         cv.put("title",todoItem.getTitle());
         cv.put("descricao",todoItem.getDescription());
         cv.put("deadline",new SimpleDateFormat("dd/MM/yyyy").format(todoItem.getDeadLine()));
@@ -44,11 +45,12 @@ public class TodoItemDAO {
 
         return true;
     }
-    public  boolean atualizar(TodoItem todoItem){
+    public  boolean update(TodoItem todoItem){
         ContentValues cv = new ContentValues();
+        cv.put("id",todoItem.getId());
         cv.put("title",todoItem.getTitle());
         cv.put("description",todoItem.getDescription());
-        cv.put("deadline",todoItem.getDeadLine().toString());
+        cv.put("deadline",new SimpleDateFormat("dd/MM/yyyy").format(todoItem.getDeadLine()));
 
         try{
             String[] args = {todoItem.getId().toString()};
@@ -81,7 +83,7 @@ public class TodoItemDAO {
         String sql = "SELECT * FROM "+DBHelper.TABELA_TODO;
         Cursor c = le.rawQuery(sql,null);
 
-       if(        c.moveToFirst()) {
+       if(c.moveToFirst()) {
 
           do{
 

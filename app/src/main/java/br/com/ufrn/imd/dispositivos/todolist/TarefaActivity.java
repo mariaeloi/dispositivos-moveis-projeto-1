@@ -101,7 +101,7 @@ public class TarefaActivity extends AppCompatActivity
         // set TodoItem id
         Integer id;
         if (todoItemList.size() == 0) {
-            id = 1;
+            id = 0;
         }
         else {
             id = todoItemList.get(todoItemList.size() - 1).getId() + 1;
@@ -119,11 +119,15 @@ public class TarefaActivity extends AppCompatActivity
 
     @Override
     public void updateItem(TodoItem todoItem) {
-        int id = todoItem.getId() - 1;
+        int id = todoItem.getId();
         Log.d("id", "id: " + id);
+        if(todoItemDAO.update(todoItem)){
+
+
         todoItemList.set(id, todoItem);
         todoItemListCopy.set(id, todoItem);
         adapter.notifyDataSetChanged();
+    }
     }
 
     @Override
