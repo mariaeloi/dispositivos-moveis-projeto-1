@@ -46,26 +46,24 @@ public class TarefaActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tarefa);
 
-
         fragmentManager = getSupportFragmentManager();
 
         todoItemList = new ArrayList<>();
         todoItemListCopy = new ArrayList<>();
 
+        todoItemDAO = new TodoItemDAO(getApplicationContext());
+        todoItemList.addAll(todoItemDAO.load());
+        todoItemListCopy.addAll(todoItemList);
+
         simpleSearchView = findViewById(R.id.simpleSearchView);
 
-
+        adapter = new RecyclerViewAdapter(this, todoItemList, todoItemListCopy);
+        adapter.setClickListener(this);
 
         rvTodoList =  findViewById(R.id.rvTodoList);
         rvTodoList.setLayoutManager(new LinearLayoutManager(this));
         rvTodoList.setAdapter(adapter);
-        todoItemDAO = new TodoItemDAO(getApplicationContext());
 
-        todoItemList.addAll(todoItemDAO.carregar());
-        todoItemListCopy.addAll(todoItemList);
-
-        adapter = new RecyclerViewAdapter(this, todoItemList, todoItemListCopy);
-        adapter.setClickListener(this);
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -101,8 +99,6 @@ public class TarefaActivity extends AppCompatActivity
     @Override
     public void saveTodoItem(TodoItem todoItem) {
         // set TodoItem id
-
-
         Integer id;
         if (todoItemList.size() == 0) {
             id = 1;

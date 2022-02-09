@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ public class TodoItemDAO {
 
     private final SQLiteDatabase escreve;
     private final SQLiteDatabase le;
+    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
 
     public TodoItemDAO(Context context){
@@ -30,9 +32,8 @@ public class TodoItemDAO {
 
         ContentValues cv = new ContentValues();
         cv.put("title",todoItem.getTitle());
-        cv.put("description",todoItem.getDescription());
-        cv.put("deadline",todoItem.getDeadLine().toString());
-
+        cv.put("descricao",todoItem.getDescription());
+        cv.put("deadline",new SimpleDateFormat("dd/MM/yyyy").format(todoItem.getDeadLine()));
         try {
             escreve.insert(DBHelper.TABELA_TODO,null,cv);
             Log.i("alerta","Item salvo com sucesso");
@@ -75,27 +76,33 @@ public class TodoItemDAO {
         return  true;
     }
 
-    public List<TodoItem> carregar(){
+    public List<TodoItem> load(){
         List<TodoItem> todoItemList = new ArrayList<>();
         String sql = "SELECT * FROM "+DBHelper.TABELA_TODO;
         Cursor c = le.rawQuery(sql,null);
-        c.moveToFirst();
 
-        try {
-        TodoItem todoItem = new TodoItem();
+       if(        c.moveToFirst()) {
 
-        todoItem.setId(c.getColumnIndexOrThrow("id"));
-        todoItem.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
-        todoItem.setDeadLine( c.getString(c.getColumnIndexOrThrow("deadline")));
-        todoItem.setDescription(c.getString(c.getColumnIndexOrThrow("descricao")));
+          do{
 
-        todoItemList.add(todoItem);
 
-        c.moveToNext();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+           try {
+               TodoItem todoItem = new TodoItem();
 
+               todoItem.setId(c.getColumnIndexOrThrow("id"));
+               todoItem.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
+
+               todoItem.setDeadLine(formatter.parse( c.getString(c.getColumnIndexOrThrow("deadline"))) );
+
+
+               todoItem.setDescription(c.getString(c.getColumnIndexOrThrow("descricao")));
+               todoItemList.add(todoItem);
+
+
+           } catch (Exception e) {
+               e.printStackTrace();
+           }} while ( c.moveToNext());
+       }
 
         return  todoItemList;
     }

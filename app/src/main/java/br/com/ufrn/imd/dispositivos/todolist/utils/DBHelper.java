@@ -24,7 +24,7 @@ public class DBHelper  extends SQLiteOpenHelper {
         String criarTabelaTodo = "CREATE TABLE IF NOT EXISTS " + TABELA_TODO
                 + "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + "title VARCHAR(50) NOT NULL, "
-                + "deadline VARCHAR(100) NOT NULL, "
+                + "deadline VARCHAR(50) NOT NULL, "
                 + "descricao VARCHAR(50) NOT NULL);";
 
         String criarTabelaUsuario = "CREATE TABLE IF NOT EXISTS " + TABELA_USUARIO
