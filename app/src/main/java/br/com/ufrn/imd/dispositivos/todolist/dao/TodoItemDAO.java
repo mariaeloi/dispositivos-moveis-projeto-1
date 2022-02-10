@@ -27,17 +27,15 @@ public class TodoItemDAO {
     }
 
     public boolean create (TodoItem todoItem) {
-
         ContentValues cv = new ContentValues();
-        cv.put("id",todoItem.getId());
         cv.put("title",todoItem.getTitle());
         cv.put("description",todoItem.getDescription());
-        cv.put("deadline",new SimpleDateFormat("dd/MM/yyyy").format(todoItem.getDeadLine()));
+        cv.put("deadline", formatter.format(todoItem.getDeadLine()));
         try {
             escreve.insert(DBHelper.TABELA_TODO,null,cv);
-            Log.i("alerta","Item salvo com sucesso");
+            Log.i("INFO DB","Item salvo com sucesso");
         }catch (Exception e){
-            Log.i("alerta","Erro ao salvar item da lista");
+            Log.i("INFO DB","Erro ao salvar item da lista");
             return false;
         }
 
@@ -45,18 +43,17 @@ public class TodoItemDAO {
     }
     public  boolean update(TodoItem todoItem){
         ContentValues cv = new ContentValues();
-        cv.put("id",todoItem.getId());
         cv.put("title",todoItem.getTitle());
         cv.put("description",todoItem.getDescription());
-        cv.put("deadline",new SimpleDateFormat("dd/MM/yyyy").format(todoItem.getDeadLine()));
+        cv.put("deadline", formatter.format(todoItem.getDeadLine()));
 
         try{
             String[] args = {todoItem.getId().toString()};
 
             escreve.update(DBHelper.TABELA_TODO,cv,"id=?",args);
-            Log.i("INFO","Registro atualizado com sucesso!");
+            Log.i("INFO DB","Registro atualizado com sucesso!");
         }catch (Exception e){
-            Log.i("INFO","Erro ao atualizar registro!" + e.getMessage());
+            Log.i("INFO DB","Erro ao atualizar registro!" + e.getMessage());
             return false;
         }
         return  true;
@@ -67,10 +64,10 @@ public class TodoItemDAO {
             String [] args ={todoItem.getId().toString()};
 
             escreve.delete(DBHelper.TABELA_TODO,"id=?",args);
-            Log.i("INFO","item deletado com sucesso!");
+            Log.i("INFO DB","item deletado com sucesso!");
 
         }catch (Exception e){
-            Log.i("INFO","Erro ao Deletar item!" + e.getMessage());
+            Log.i("INFO DB","Erro ao Deletar item!" + e.getMessage());
             return false;
         }
         return  true;
