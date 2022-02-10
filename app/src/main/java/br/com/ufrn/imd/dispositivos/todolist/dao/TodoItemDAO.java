@@ -6,10 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
@@ -33,7 +31,7 @@ public class TodoItemDAO {
         ContentValues cv = new ContentValues();
         cv.put("id",todoItem.getId());
         cv.put("title",todoItem.getTitle());
-        cv.put("descricao",todoItem.getDescription());
+        cv.put("description",todoItem.getDescription());
         cv.put("deadline",new SimpleDateFormat("dd/MM/yyyy").format(todoItem.getDeadLine()));
         try {
             escreve.insert(DBHelper.TABELA_TODO,null,cv);
@@ -91,13 +89,13 @@ public class TodoItemDAO {
            try {
                TodoItem todoItem = new TodoItem();
 
-               todoItem.setId(c.getColumnIndexOrThrow("id"));
+               todoItem.setId(c.getInt(c.getColumnIndexOrThrow("id")));
                todoItem.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
 
                todoItem.setDeadLine(formatter.parse( c.getString(c.getColumnIndexOrThrow("deadline"))) );
 
 
-               todoItem.setDescription(c.getString(c.getColumnIndexOrThrow("descricao")));
+               todoItem.setDescription(c.getString(c.getColumnIndexOrThrow("description")));
                todoItemList.add(todoItem);
 
 

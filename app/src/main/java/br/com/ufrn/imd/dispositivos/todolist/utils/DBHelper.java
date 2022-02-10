@@ -22,10 +22,10 @@ public class DBHelper  extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String criarTabelaTodo = "CREATE TABLE IF NOT EXISTS " + TABELA_TODO
-                + "(id INTEGER PRIMARY KEY NOT NULL,"
+                + "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + "title VARCHAR(50) NOT NULL, "
-                + "deadline VARCHAR(50) NOT NULL, "
-                + "descricao VARCHAR(50) NOT NULL);";
+                + "deadline CHAR(10) NOT NULL, "
+                + "description VARCHAR(50) NOT NULL);";
 
         String criarTabelaUsuario = "CREATE TABLE IF NOT EXISTS " + TABELA_USUARIO
                 + "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
