@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,12 +21,19 @@ import android.widget.SearchView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
+import br.com.ufrn.imd.dispositivos.todolist.service.NotificationLoginService;
+import br.com.ufrn.imd.dispositivos.todolist.utils.NotificationScheduledReciever;
 
 public class TarefaActivity extends AppCompatActivity
         implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem, EditItemFragment.OnUpdateItem, EditItemFragment.OnDeleteItem {
@@ -79,6 +88,28 @@ public class TarefaActivity extends AppCompatActivity
                 todoItemDialog.show(fragmentManager, TodoItemDialog.DIALOG_TAG);
             }
         });
+
+        // Para testes
+        Date dataHoje = null;
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            dataHoje = formatter.parse( formatter.format(new Date()) );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        for(int i=0; i<3; i++) {
+            todoItemList.add(new TodoItem(i, "Tarefa Teste " + i, "Descrição", dataHoje));
+            todoItemListCopy.add(new TodoItem(i, "Tarefa Teste " + i, "Descrição 1", dataHoje));
+        }
+        //
+
+        // Intent para notificar sobre as tarefas que encerram no dia atual
+        Intent itNotificationLogin = new Intent(getApplicationContext(), NotificationLoginService.class);
+        itNotificationLogin.putExtra(NotificationLoginService.TASKS, (Serializable) todoItemList);
+        startService(itNotificationLogin);
+
+        this.setAlarmForNotifications();
     }
 
     @Override
@@ -157,5 +188,31 @@ public class TarefaActivity extends AppCompatActivity
                 })
                 .setNegativeButton(R.string.button_sair, null)
                 .show();
+    }
+
+    /**
+     * Define alarme diário para notificar sobre tarefas que o prazo encerra em breve.
+     */
+    private void setAlarmForNotifications() {
+        Intent intent = new Intent(this, NotificationScheduledReciever.class);
+        // `FLAG_UPDATE_CURRENT` indica que a intenção pendente criada pode ser atualizada no futuro
+        PendingIntent alarmIntent = PendingIntent
+                .getBroadcast( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+        // Define o alarme para iniciar aproximadamente às 8:00 da manhã
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis( System.currentTimeMillis() );
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // O alarme será acionado todos os dias no horário definido em `calender`
+        // `RTC_WAKEUP` garante que o alarme será acionado mesmo que o dispositivo entre no modo de suspensão
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY, alarmIntent);
+
+        // Com intervalo de 30 segundos para teste
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000 * 30, alarmIntent);
     }
 }
