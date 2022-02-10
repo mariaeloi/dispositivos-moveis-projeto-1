@@ -11,7 +11,6 @@ import android.os.Bundle;
 
 import android.content.DialogInterface;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -88,6 +87,14 @@ public class TarefaActivity extends AppCompatActivity
         });
     }
 
+    private void reloadTasks() {
+        todoItemList.clear();
+        todoItemList.addAll(todoItemDAO.load());
+        todoItemListCopy.clear();
+        todoItemListCopy.addAll(todoItemList);
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onItemClick(View view, int position) {
         TodoItem itemSelected = (TodoItem) todoItemList.get(position);
@@ -98,23 +105,9 @@ public class TarefaActivity extends AppCompatActivity
 
     @Override
     public void saveTodoItem(TodoItem todoItem) {
-        // set TodoItem id
-//        Integer id;
-//        if (todoItemList.size() == 0) {
-//            id = 0;
-//        }
-//        else {
-//            id = todoItemList.get(todoItemList.size() - 1).getId() + 1;
-//        }
-//
-//
-//        todoItem.setId(id);
         if( todoItemDAO.create(todoItem)){
             Toast.makeText(getApplicationContext(), "Tarefa cadatrada", Toast.LENGTH_SHORT).show();
-            // TODO atualizar `todoItemList`
-//            todoItemList.add(todoItem);
-//            todoItemListCopy.add(todoItem);
-//            adapter.notifyDataSetChanged();
+            reloadTasks();
         } else {
             Toast.makeText(getApplicationContext(), "Erro ao cadastrar tarefa", Toast.LENGTH_SHORT).show();
         }
@@ -122,15 +115,9 @@ public class TarefaActivity extends AppCompatActivity
 
     @Override
     public void updateItem(TodoItem todoItem) {
-//        int id = todoItem.getId();
-//        Log.d("id", "id: " + id);
         if(todoItemDAO.update(todoItem)){
             Toast.makeText(getApplicationContext(), "Tarefa atualizada", Toast.LENGTH_SHORT).show();
-            // TODO atualizar `todoItemList`
-
-//            todoItemList.set(id, todoItem);
-//            todoItemListCopy.set(id, todoItem);
-//            adapter.notifyDataSetChanged();
+            reloadTasks();
         } else {
             Toast.makeText(getApplicationContext(), "Erro ao atualizar tarefa", Toast.LENGTH_SHORT).show();
         }
@@ -139,25 +126,11 @@ public class TarefaActivity extends AppCompatActivity
     @Override
     public void deleteItem(TodoItem todoItem)
     {
-//        int id = todoItem.getId();
-//        todoItemList.remove(id-1);
-//        todoItemListCopy.remove(id-1);
-//        updateIndex(id);
-//        adapter.notifyDataSetChanged();
-
         if(todoItemDAO.delete(todoItem)) {
             Toast.makeText(getApplicationContext(), "Tarefa removida", Toast.LENGTH_SHORT).show();
-            // TODO atualizar `todoItemList`
+            reloadTasks();
         } else {
             Toast.makeText(getApplicationContext(), "Erro ao remover tarefa", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void updateIndex(int initialId){
-        for (int i=initialId+1; i<=todoItemList.size()+1; i++) {
-            TodoItem item = todoItemList.get(i-2);
-            item.setId(i-1);
-            todoItemList.set(i-2, item);
         }
     }
 
