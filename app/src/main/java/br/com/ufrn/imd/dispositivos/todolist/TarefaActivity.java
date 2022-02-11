@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.AsyncQueryHandler;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,6 +54,8 @@ public class TarefaActivity extends AppCompatActivity
 
     private FloatingActionButton facbnewItem;
 
+    private final static String urlLocal = "https://geocoding-api.open-meteo.com/v1/search?name=Berlin";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +98,9 @@ public class TarefaActivity extends AppCompatActivity
             }
         });
 
-        // consumir API de clima
-        String url = "https://api.open-meteo.com/v1/forecast?latitude=-5.81&longitude=-35.26&hourly=temperature_2m";
-        ClimaAPI clima = new ClimaAPI();
-        clima.execute(url);
+        // consumir API de local e depois de clima
+        LocalAPI local = new LocalAPI();
+        local.execute(urlLocal);
     }
 
     @Override
@@ -177,6 +179,53 @@ public class TarefaActivity extends AppCompatActivity
                 })
                 .setNegativeButton(R.string.button_sair, null)
                 .show();
+    }
+
+    class LocalAPI extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            InputStream is = null;
+            InputStreamReader isr = null;
+            StringBuffer buffer = null;
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                is = conn.getInputStream();
+                isr = new InputStreamReader(is);
+                BufferedReader reader = new BufferedReader(isr);
+                buffer = new StringBuffer();
+                String linha = "";
+
+                while ((linha = reader.readLine()) != null) {
+                    buffer.append(linha);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            return buffer.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            String lat = "";
+            String lon = "";
+
+            try {
+                JSONObject jo = new JSONObject(s);
+                lat = jo.getJSONArray("results").getJSONObject(0).getString("latitude");
+                lon = jo.getJSONArray("results").getJSONObject(0).getString("longitude");
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();;
+            }
+
+            String urlClima = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&hourly=temperature_2m";
+            ClimaAPI clima = new ClimaAPI();
+            clima.execute(urlClima);
+        }
     }
 
     class ClimaAPI extends AsyncTask<String, Void, String> {

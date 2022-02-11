@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menuclima"
-        android:title="Natal 0.0 oC"
+        android:title=""
         app:showAsAction="ifRoom|withText" />
 
     <item
