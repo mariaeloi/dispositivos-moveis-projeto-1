@@ -3,6 +3,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menuclima"
+        android:title="Natal 0.0 oC"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
         android:id="@+id/miProfile"
         android:icon="@drawable/ic_launcher_foreground"
         android:title="Profile"

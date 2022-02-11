@@ -2,10 +2,12 @@ package br.com.ufrn.imd.dispositivos.todolist;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,7 +49,7 @@ public class TarefaActivity extends AppCompatActivity
     RecyclerView rvTodoList;
     List<TodoItem> todoItemList;
     List<TodoItem> todoItemListCopy;
-    TextView tvClima;
+    ActionMenuItemView clima;
 
     private FloatingActionButton facbnewItem;
 
@@ -63,7 +65,6 @@ public class TarefaActivity extends AppCompatActivity
         todoItemListCopy = new ArrayList<>();
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
-        tvClima = findViewById(R.id.tvClima);
 
         adapter = new RecyclerViewAdapter(this, todoItemList, todoItemListCopy);
         adapter.setClickListener(this);
@@ -203,6 +204,7 @@ public class TarefaActivity extends AppCompatActivity
             return buffer.toString();
         }
 
+        @SuppressLint("RestrictedApi")
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -216,7 +218,9 @@ public class TarefaActivity extends AppCompatActivity
             catch (Exception e) {
                 e.printStackTrace();;
             }
-            tvClima.setText("Temperatura em Natal: " + result + "ºC");
+
+            clima = findViewById(R.id.menuclima);
+            clima.setTitle(result + " ºC");
         }
     }
 }
