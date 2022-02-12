@@ -16,6 +16,7 @@ public class TodoItem implements Serializable {
     private String title;
     private String description;
     private Date deadLine;
+    private Integer idUsuario;
 
     public TodoItem() {
     }
@@ -59,4 +60,11 @@ public class TodoItem implements Serializable {
         this.deadLine = deadLine;
     }
 
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer id){
+        idUsuario = id;
+    }
 }

@@ -31,6 +31,7 @@ public class TodoItemDAO {
         cv.put("title",todoItem.getTitle());
         cv.put("description",todoItem.getDescription());
         cv.put("deadline", formatter.format(todoItem.getDeadLine()));
+        cv.put("id_usuario", todoItem.getIdUsuario());
         try {
             escreve.insert(DBHelper.TABELA_TODO,null,cv);
             Log.i("INFO DB","Item salvo com sucesso");
@@ -104,6 +105,43 @@ public class TodoItemDAO {
         return  todoItemList;
     }
 
+    public List<TodoItem> findByIdUsuario(Integer idUsuario){
+        List<TodoItem> lisTtodoItems = new ArrayList<>();
+
+        //1. string sql de consulta
+        String sql = "SELECT * FROM "+DBHelper.TABELA_TODO+ ";";
+
+        //2. Cursor para acesso aos dados
+        Cursor c = le.rawQuery(sql,null);
+
+        //3. percorrer o cursor
+        c.moveToFirst();
+        try{
+            while(c.moveToNext()){
+
+                TodoItem todoItem = new TodoItem();
+
+                //Long id = c.getLong( 0 );
+                Integer id = c.getInt( c.getColumnIndexOrThrow("id") );
+                String title = c.getString(c.getColumnIndexOrThrow("title"));
+                String description = c.getString(c.getColumnIndexOrThrow("description"));
+                String deadline = c.getString(c.getColumnIndexOrThrow("deadline"));
+
+
+                todoItem.setId(id);
+                todoItem.setTitle(title);
+                todoItem.setDescription(description);
+                todoItem.setDeadLine(formatter.parse(deadline));
+                todoItem.setIdUsuario(idUsuario);
+
+                lisTtodoItems.add(todoItem);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        c.close();
+        return lisTtodoItems;
+    }
 
 
 

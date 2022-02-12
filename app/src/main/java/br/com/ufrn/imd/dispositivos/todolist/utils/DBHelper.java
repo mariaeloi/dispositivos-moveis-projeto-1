@@ -25,7 +25,9 @@ public class DBHelper  extends SQLiteOpenHelper {
                 + "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + "title VARCHAR(50) NOT NULL, "
                 + "deadline CHAR(10) NOT NULL, "
-                + "description VARCHAR(50) NOT NULL);";
+                + "description VARCHAR(50) NOT NULL,"
+                + "id_usuario INTEGER NOT NULL,"
+                + "FOREIGN KEY(id_usuario) REFERENCES " + TABELA_USUARIO + "(id));";
 
         String criarTabelaUsuario = "CREATE TABLE IF NOT EXISTS " + TABELA_USUARIO
                 + "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
