@@ -30,7 +30,8 @@ public class DBHelper  extends SQLiteOpenHelper {
         String criarTabelaUsuario = "CREATE TABLE IF NOT EXISTS " + TABELA_USUARIO
                 + "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + "username VARCHAR(20) NOT NULL,"
-                + "password VARCHAR(20) NOT NULL);";
+                + "password VARCHAR(20) NOT NULL,"
+                + "city VARCHAR(20) NOT NULL);";
         try{
             db.execSQL(criarTabelaTodo);
             Log.i("INFO DB","Sucesso ao criar ao tabela Todo!");
@@ -45,10 +46,12 @@ public class DBHelper  extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        String sql = "DROP TABLE IF EXISTS " + TABELA_TODO +";";
+        String tabelaTodosql = "DROP TABLE IF EXISTS " + TABELA_TODO +";";
+        String TabelaUsuariosql = "DROP TABLE IF EXISTS " + TABELA_USUARIO +";";
 
         try{
-            db.execSQL(sql);
+            db.execSQL(tabelaTodosql);
+            db.execSQL(TabelaUsuariosql);
             onCreate(db);
             Log.i("INFO DB","Sucesso ao criar ao tabela!");
         }catch(Exception e){

@@ -11,19 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="129dp"
         android:gravity="center_vertical"
-        android:text="CADASTRAR"
+        android:text="ATUALIZAR PERFIL"
         android:textAlignment="center" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:text="username" />
 
     <EditText
         android:id="@+id/atualizarUsernameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:ems="10"
         android:inputType="textPersonName" />
 
@@ -31,24 +33,28 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:text="city" />
 
     <EditText
         android:id="@+id/atualizarCity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:ems="10" />
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:text="password" />
 
     <EditText
         android:id="@+id/atualizarPasswordTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:ems="10"
         android:inputType="textPassword" />
 
@@ -56,6 +62,12 @@
         android:id="@+id/confimarAtualizarPefilBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Confirmar Cadastro" />
+        android:text="Confirmar Atualização" />
+
+    <Button
+        android:id="@+id/confimarDeletarPefilBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deletar Perfil" />
 
 </LinearLayout>

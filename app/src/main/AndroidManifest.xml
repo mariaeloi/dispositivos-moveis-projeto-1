@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".RegisterUserActivity"/>
         <activity android:name=".TarefaActivity"/>
+        <activity android:name=".EditUserActivity"/>
+
     </application>
 
 </manifest>
