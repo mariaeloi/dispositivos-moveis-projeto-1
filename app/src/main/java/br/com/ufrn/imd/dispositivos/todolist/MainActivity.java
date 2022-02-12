@@ -26,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        usernameET = findViewById(R.id.cadastrarUsernameTV);
-        passwordET = findViewById(R.id.cadastrarPasswordTV);
+        usernameET = findViewById(R.id.atualizarUsernameTV);
+        passwordET = findViewById(R.id.atualizarPasswordTV);
         cadastrarUserBtn = findViewById(R.id.goToCadastrarBtn);
-        loginBtn = findViewById(R.id.confimarCadastroBtn);
+        loginBtn = findViewById(R.id.confimarAtualizarPefilBtn);
         usuarioDAO = new UsuarioDAO(getApplicationContext());
         if(usuarioDAO.usuariosLogados() >= 1){
             cadastrarUserBtn.setVisibility(INVISIBLE);
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(v -> {
             String username = usernameET.getText().toString();
             String password = passwordET.getText().toString();
+
             if(!username.isEmpty() && username != null && !password.isEmpty() && password != null){
                 Usuario usuario = new Usuario();
                 usuario.setUsername(username);
@@ -62,9 +63,23 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Preencha todos os campos!", Toast.LENGTH_SHORT).show();            }
 
         });
-
-
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (usuarioDAO.usuariosLogados() >= 1) {
+            cadastrarUserBtn.setVisibility(INVISIBLE);
+        } else {
+            cadastrarUserBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
+    }
 }
