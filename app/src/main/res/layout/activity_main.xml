@@ -9,8 +9,7 @@
     <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
+        android:layout_height="129dp"
         android:gravity="center_vertical"
         android:text="LOGIN"
         android:textAlignment="center" />
@@ -22,7 +21,7 @@
         android:text="username" />
 
     <EditText
-        android:id="@+id/cadastrarUsernameTV"
+        android:id="@+id/atualizarUsernameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -35,19 +34,14 @@
         android:text="password" />
 
     <EditText
-        android:id="@+id/cadastrarPasswordTV"
+        android:id="@+id/atualizarPasswordTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="11" />
-
     <Button
-        android:id="@+id/confimarCadastroBtn"
+        android:id="@+id/confimarAtualizarPefilBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login" />
@@ -57,10 +51,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="cadastrar" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="11" />
 
 </LinearLayout>

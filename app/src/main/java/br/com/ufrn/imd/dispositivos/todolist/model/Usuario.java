@@ -6,6 +6,16 @@ public class Usuario implements Serializable {
     private Integer id;
     private String username;
     private String password;
+    private String city;
+
+    public Usuario() {
+    }
+    public Usuario(Integer id, String username, String password, String city) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.city = city;
+    }
 
     public Integer getId() {
         return id;
@@ -29,5 +39,13 @@ public class Usuario implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

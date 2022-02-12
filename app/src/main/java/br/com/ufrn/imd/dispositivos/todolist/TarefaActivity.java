@@ -37,7 +37,7 @@ public class TarefaActivity extends AppCompatActivity
     List<TodoItem> todoItemListCopy;
 
     private FloatingActionButton facbnewItem;
-
+    private FloatingActionButton facbnewItem2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +57,9 @@ public class TarefaActivity extends AppCompatActivity
         rvTodoList =  findViewById(R.id.rvTodoList);
         rvTodoList.setLayoutManager(new LinearLayoutManager(this));
         rvTodoList.setAdapter(adapter);
+
+        facbnewItem = findViewById(R.id.facbnewItem);
+        facbnewItem2 = findViewById(R.id.facbnewItem2);
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -71,13 +74,17 @@ public class TarefaActivity extends AppCompatActivity
             }
         });
 
-        facbnewItem = findViewById(R.id.facbnewItem);
         facbnewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TodoItemDialog todoItemDialog = TodoItemDialog.newInstance();
                 todoItemDialog.show(fragmentManager, TodoItemDialog.DIALOG_TAG);
             }
+        });
+
+        facbnewItem2.setOnClickListener(v-> {
+            Intent intent = new Intent(getApplicationContext(), EditUserActivity.class);
+            startActivity(intent);
         });
     }
 

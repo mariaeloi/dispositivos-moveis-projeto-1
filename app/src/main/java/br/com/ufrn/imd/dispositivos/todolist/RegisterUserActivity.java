@@ -1,6 +1,5 @@
 package br.com.ufrn.imd.dispositivos.todolist;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,24 +15,30 @@ public class RegisterUserActivity  extends AppCompatActivity {
     private EditText cadastrarUsernameTV;
     private EditText cadastrarPasswordTV;
     private Button confimarCadastroBtn;
+    private EditText cityET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
 
-        cadastrarUsernameTV = findViewById(R.id.cadastrarUsernameTV);
-        cadastrarPasswordTV = findViewById(R.id.cadastrarPasswordTV);
-        confimarCadastroBtn = findViewById(R.id.confimarCadastroBtn);
+        cadastrarUsernameTV = findViewById(R.id.atualizarUsernameTV);
+        cadastrarPasswordTV = findViewById(R.id.atualizarPasswordTV);
+        confimarCadastroBtn = findViewById(R.id.confimarAtualizarPefilBtn);
+        cityET = findViewById(R.id.atualizarCity);
 
         confimarCadastroBtn.setOnClickListener(v -> {
             String username = cadastrarUsernameTV.getText().toString();
             String password = cadastrarPasswordTV.getText().toString();
-            if(!username.isEmpty() && username != null && !password.isEmpty() && password != null){
+            String city = cityET.getText().toString();
+
+            if(!username.isEmpty() && username != null && !city.isEmpty() && city != null && !password.isEmpty() && password != null){
                 UsuarioDAO usuarioDAO = new UsuarioDAO(getApplicationContext());
                 Usuario usuario = new Usuario();
                 usuario.setUsername(username);
                 usuario.setPassword(password);
+                usuario.setCity(city);
+
                 if(usuarioDAO.salvar(usuario)){
                     Toast.makeText(getApplicationContext(), "Usuário cadatrado", Toast.LENGTH_SHORT).show();
                     finish();

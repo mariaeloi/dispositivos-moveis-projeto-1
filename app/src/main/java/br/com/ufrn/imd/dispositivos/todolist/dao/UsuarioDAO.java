@@ -3,6 +3,7 @@ package br.com.ufrn.imd.dispositivos.todolist.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
@@ -48,6 +49,7 @@ public class UsuarioDAO {
             ContentValues cv = new ContentValues();
             cv.put("username",usuario.getUsername());
             cv.put("password", usuario.getPassword());
+            cv.put("city", usuario.getCity());
             try{
                 escreve.insert(DBHelper.TABELA_USUARIO,null,cv);
                 Log.i("INFO","Registro salvo com sucesso!");
@@ -67,6 +69,7 @@ public class UsuarioDAO {
         ContentValues cv = new ContentValues();
         cv.put("username",usuario.getUsername());
         cv.put("password",usuario.getPassword());
+        cv.put("city", usuario.getCity());
 
         //2. atualizar valor no banco
         try{
@@ -108,5 +111,29 @@ public class UsuarioDAO {
         int count= c.getCount();
         c.close();
         return count;
+    }
+
+    public Usuario getUsuarioLogado(){
+        String sql = "SELECT * FROM "
+                +DBHelper.TABELA_USUARIO
+                +";";
+
+        Cursor c = le.rawQuery(sql, null);
+        Integer id;
+        String username;
+        String password;
+        String city;
+        try {
+            c.moveToFirst();
+            id = c.getInt( c.getColumnIndexOrThrow("id") );
+            username = c.getString( c.getColumnIndexOrThrow("username") );
+            password = c.getString( c.getColumnIndexOrThrow("password") );
+            city = c.getString( c.getColumnIndexOrThrow("city") );
+            Usuario usuario = new Usuario(id,username, password, city);
+            return usuario;
+        } catch(Exception e){
+            throw new SQLException("[ERROR] br.com.ufrn.imd.dispositivos.dao.UsuarioDAO.getUsuarioLogado");
+        }
+
     }
 }
