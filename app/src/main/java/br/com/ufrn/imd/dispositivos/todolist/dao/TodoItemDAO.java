@@ -74,9 +74,9 @@ public class TodoItemDAO {
         return  true;
     }
 
-    public List<TodoItem> load(){
+    public List<TodoItem> load(Integer id){
         List<TodoItem> todoItemList = new ArrayList<>();
-        String sql = "SELECT * FROM "+DBHelper.TABELA_TODO;
+        String sql = "SELECT * FROM "+DBHelper.TABELA_TODO+" WHERE id_usuario="+id;
         Cursor c = le.rawQuery(sql,null);
 
        if(c.moveToFirst()) {

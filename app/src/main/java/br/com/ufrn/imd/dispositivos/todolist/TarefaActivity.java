@@ -49,6 +49,7 @@ public class TarefaActivity extends AppCompatActivity
         setContentView(R.layout.activity_tarefa);
 
         usuarioDAO = new UsuarioDAO(getApplicationContext());
+        Usuario usuario = usuarioDAO.getUsuarioLogado();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -56,7 +57,7 @@ public class TarefaActivity extends AppCompatActivity
         todoItemListCopy = new ArrayList<>();
 
         todoItemDAO = new TodoItemDAO(getApplicationContext());
-        todoItemList.addAll(todoItemDAO.load());
+        todoItemList.addAll(todoItemDAO.load(usuario.getId()));
         todoItemListCopy.addAll(todoItemList);
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
@@ -99,8 +100,10 @@ public class TarefaActivity extends AppCompatActivity
     }
 
     private void reloadTasks() {
+        Usuario usuario = usuarioDAO.getUsuarioLogado();
+
         todoItemList.clear();
-        todoItemList.addAll(todoItemDAO.load());
+        todoItemList.addAll(todoItemDAO.load(usuario.getId()));
         todoItemListCopy.clear();
         todoItemListCopy.addAll(todoItemList);
         adapter.notifyDataSetChanged();
@@ -118,6 +121,8 @@ public class TarefaActivity extends AppCompatActivity
     public void saveTodoItem(TodoItem todoItem) {
         Usuario usuario = usuarioDAO.getUsuarioLogado();
         todoItem.setIdUsuario(usuario.getId());
+
+
         if( todoItemDAO.create(todoItem)){
             Toast.makeText(getApplicationContext(), "Tarefa cadatrada", Toast.LENGTH_SHORT).show();
             reloadTasks();
