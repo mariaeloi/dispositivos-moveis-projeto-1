@@ -13,27 +13,27 @@ import android.os.Bundle;
 
 import android.content.DialogInterface;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
+import br.com.ufrn.imd.dispositivos.todolist.dao.UsuarioDAO;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 import br.com.ufrn.imd.dispositivos.todolist.service.NotificationLoginService;
 import br.com.ufrn.imd.dispositivos.todolist.utils.NotificationScheduledReciever;
+import br.com.ufrn.imd.dispositivos.todolist.dao.TodoItemDAO;
+import br.com.ufrn.imd.dispositivos.todolist.model.Usuario;
 
 public class TarefaActivity extends AppCompatActivity
         implements RecyclerViewAdapter.ItemClickListener, TodoItemDialog.OnSaveTodoItem, EditItemFragment.OnUpdateItem, EditItemFragment.OnDeleteItem {
@@ -44,19 +44,27 @@ public class TarefaActivity extends AppCompatActivity
     RecyclerView rvTodoList;
     List<TodoItem> todoItemList;
     List<TodoItem> todoItemListCopy;
+    TodoItemDAO todoItemDAO;
 
     private FloatingActionButton facbnewItem;
-
+    private FloatingActionButton facbnewItem2;
+    private UsuarioDAO usuarioDAO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tarefa);
 
+        usuarioDAO = new UsuarioDAO(getApplicationContext());
+        Usuario usuario = usuarioDAO.getUsuarioLogado();
 
         fragmentManager = getSupportFragmentManager();
 
         todoItemList = new ArrayList<>();
         todoItemListCopy = new ArrayList<>();
+
+        todoItemDAO = new TodoItemDAO(getApplicationContext());
+        todoItemList.addAll(todoItemDAO.load(usuario.getId()));
+        todoItemListCopy.addAll(todoItemList);
 
         simpleSearchView = findViewById(R.id.simpleSearchView);
 
@@ -66,6 +74,9 @@ public class TarefaActivity extends AppCompatActivity
         rvTodoList =  findViewById(R.id.rvTodoList);
         rvTodoList.setLayoutManager(new LinearLayoutManager(this));
         rvTodoList.setAdapter(adapter);
+
+        facbnewItem = findViewById(R.id.facbnewItem);
+        facbnewItem2 = findViewById(R.id.facbnewItem2);
         simpleSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -80,7 +91,6 @@ public class TarefaActivity extends AppCompatActivity
             }
         });
 
-        facbnewItem = findViewById(R.id.facbnewItem);
         facbnewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,20 +99,10 @@ public class TarefaActivity extends AppCompatActivity
             }
         });
 
-        // Para testes
-        Date dataHoje = null;
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            dataHoje = formatter.parse( formatter.format(new Date()) );
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        for(int i=0; i<3; i++) {
-            todoItemList.add(new TodoItem(i, "Tarefa Teste " + i, "Descrição", dataHoje));
-            todoItemListCopy.add(new TodoItem(i, "Tarefa Teste " + i, "Descrição 1", dataHoje));
-        }
-        //
+        facbnewItem2.setOnClickListener(v-> {
+            Intent intent = new Intent(getApplicationContext(), EditUserActivity.class);
+            startActivity(intent);
+        });
 
         // Intent para notificar sobre as tarefas que encerram no dia atual
         Intent itNotificationLogin = new Intent(getApplicationContext(), NotificationLoginService.class);
@@ -110,6 +110,16 @@ public class TarefaActivity extends AppCompatActivity
         startService(itNotificationLogin);
 
         this.setAlarmForNotifications();
+    }
+
+    private void reloadTasks() {
+        Usuario usuario = usuarioDAO.getUsuarioLogado();
+
+        todoItemList.clear();
+        todoItemList.addAll(todoItemDAO.load(usuario.getId()));
+        todoItemListCopy.clear();
+        todoItemListCopy.addAll(todoItemList);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -122,46 +132,36 @@ public class TarefaActivity extends AppCompatActivity
 
     @Override
     public void saveTodoItem(TodoItem todoItem) {
-        // set TodoItem id
-        Integer id;
-        if (todoItemList.size() == 0) {
-            id = 1;
-        }
-        else {
-            id = todoItemList.get(todoItemList.size() - 1).getId() + 1;
-        }
+        Usuario usuario = usuarioDAO.getUsuarioLogado();
+        todoItem.setIdUsuario(usuario.getId());
 
-        todoItem.setId(id);
 
-        todoItemList.add(todoItem);
-        todoItemListCopy.add(todoItem);
-        adapter.notifyDataSetChanged();
+        if( todoItemDAO.create(todoItem)){
+            Toast.makeText(getApplicationContext(), "Tarefa cadatrada", Toast.LENGTH_SHORT).show();
+            reloadTasks();
+        } else {
+            Toast.makeText(getApplicationContext(), "Erro ao cadastrar tarefa", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void updateItem(TodoItem todoItem) {
-        int id = todoItem.getId() - 1;
-        Log.d("id", "id: " + id);
-        todoItemList.set(id, todoItem);
-        todoItemListCopy.set(id, todoItem);
-        adapter.notifyDataSetChanged();
+        if(todoItemDAO.update(todoItem)){
+            Toast.makeText(getApplicationContext(), "Tarefa atualizada", Toast.LENGTH_SHORT).show();
+            reloadTasks();
+        } else {
+            Toast.makeText(getApplicationContext(), "Erro ao atualizar tarefa", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void deleteItem(TodoItem todoItem)
     {
-        int id = todoItem.getId();
-        todoItemList.remove(id-1);
-        todoItemListCopy.remove(id-1);
-        updateIndex(id);
-        adapter.notifyDataSetChanged();
-    }
-
-    private void updateIndex(int initialId){
-        for (int i=initialId+1; i<=todoItemList.size()+1; i++) {
-            TodoItem item = todoItemList.get(i-2);
-            item.setId(i-1);
-            todoItemList.set(i-2, item);
+        if(todoItemDAO.delete(todoItem)) {
+            Toast.makeText(getApplicationContext(), "Tarefa removida", Toast.LENGTH_SHORT).show();
+            reloadTasks();
+        } else {
+            Toast.makeText(getApplicationContext(), "Erro ao remover tarefa", Toast.LENGTH_SHORT).show();
         }
     }
 

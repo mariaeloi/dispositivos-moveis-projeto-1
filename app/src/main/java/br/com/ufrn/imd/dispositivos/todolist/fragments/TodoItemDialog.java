@@ -121,7 +121,7 @@ public class TodoItemDialog extends DialogFragment
             todoItem.setTitle(title);
             todoItem.setDescription(description);
 
-            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             try {
                 todoItem.setDeadLine(formatter.parse(deadline));
             } catch (ParseException e) {
@@ -139,7 +139,7 @@ public class TodoItemDialog extends DialogFragment
 
     @Override
     public void setDate(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         btnDeadLine.setText(formatter.format(date));
     }
 

@@ -3,6 +3,11 @@ package br.com.ufrn.imd.dispositivos.todolist.model;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class TodoItem implements Serializable {
@@ -11,12 +16,13 @@ public class TodoItem implements Serializable {
     private String title;
     private String description;
     private Date deadLine;
+    private Integer idUsuario;
 
     public TodoItem() {
     }
 
-    public TodoItem(Integer id, String title, String description, Date deadLine) {
-        this.id = id;
+    public TodoItem( String title, String description, Date deadLine) {
+      //  this.id = id;
         this.title = title;
         this.description = description;
         this.deadLine = deadLine;
@@ -52,5 +58,13 @@ public class TodoItem implements Serializable {
 
     public void setDeadLine(Date deadLine) {
         this.deadLine = deadLine;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer id){
+        idUsuario = id;
     }
 }

@@ -26,7 +26,7 @@ public class NotificationScheduledReciever extends BroadcastReceiver {
         // Dados para teste
         List<TodoItem> tarefasParaNotificar = new ArrayList<>();
         for(int i=0; i<5; i++)
-            tarefasParaNotificar.add(new TodoItem(i, "Tarefa " + i, "Descrição", new Date()));
+            tarefasParaNotificar.add(new TodoItem("Tarefa " + i, "Descrição", new Date()));
         //
         // TODO buscar tarefas no banco de dados
         List<TodoItem> tarefasUsuarioLogado = tarefasParaNotificar;

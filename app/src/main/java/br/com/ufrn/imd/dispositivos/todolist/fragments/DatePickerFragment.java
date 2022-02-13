@@ -63,8 +63,8 @@ public class DatePickerFragment extends DialogFragment
 
         if(listener != null){
             try {
-                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                Date date = formatter.parse((month+1)+"/"+dayOfMonth+"/"+year);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = formatter.parse(+dayOfMonth+"/"+(month+1)+"/"+year);
                 listener.setDate(date);
             } catch (ParseException e) {
                 e.printStackTrace();
