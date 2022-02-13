@@ -18,7 +18,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="username" />
+        android:text="@string/usuario_username" />
 
     <EditText
         android:id="@+id/atualizarUsernameTV"
@@ -31,7 +31,7 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="password" />
+        android:text="@string/usuario_password" />
 
     <EditText
         android:id="@+id/atualizarPasswordTV"
@@ -44,7 +44,7 @@
         android:id="@+id/confimarAtualizarPefilBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login" />
+        android:text="Entrar" />
 
     <Button
         android:id="@+id/goToCadastrarBtn"

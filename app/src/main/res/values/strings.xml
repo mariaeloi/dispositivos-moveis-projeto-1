@@ -2,17 +2,21 @@
     <string name="app_name">todoList</string>
 
     <string name="search_hint">Insira o nome do item que deseja pesquisar</string>
-    <string name="datePicker_hint">Select date</string>
+    <string name="datePicker_hint">Selecione uma data</string>
 
-    <string name="add_item_dialog_title">ADD ITEM</string>
+    <string name="add_item_dialog_title">ADICIONAR TAREFA</string>
 
-    <string name="todoItem_title">Title</string>
-    <string name="todoItem_deadLine">DeadLine</string>
-    <string name="todoItem_description">Description</string>
+    <string name="todoItem_title">Título</string>
+    <string name="todoItem_deadLine">Prazo</string>
+    <string name="todoItem_description">Descrição</string>
 
-    <string name="button_save">Save</string>
-    <string name="button_delete">Delete</string>
-    <string name="button_cancel">Cancel</string>
+    <string name="usuario_username">Usuário</string>
+    <string name="usuario_city">Cidade</string>
+    <string name="usuario_password">Senha</string>
+
+    <string name="button_save">Salvar</string>
+    <string name="button_delete">Remover</string>
+    <string name="button_cancel">Cancelar</string>
 
     <string name="button_visitar_site">SITE</string>
     <string name="button_sair">SAIR</string>
