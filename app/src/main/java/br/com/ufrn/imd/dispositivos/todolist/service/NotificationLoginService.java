@@ -35,22 +35,20 @@ public class NotificationLoginService extends IntentService {
         List<TodoItem> tarefasUsuarioLogado = (ArrayList<TodoItem>) intent.getExtras()
                 .getSerializable(TASKS);
 
-        Date dataAtual = null;
         try {
             // não leva em consideração o horário
-            dataAtual = FORMATADOR_DATA.parse( FORMATADOR_DATA.format(new Date()) );
+            Date dataAtual = FORMATADOR_DATA.parse( FORMATADOR_DATA.format(new Date()) );
+
+            List<Notification> notifications = new ArrayList<>();
+            for (TodoItem tarefa : tarefasUsuarioLogado) {
+                // Se o prazo da tarefa for a data atual, cria uma notificação relacionada
+                if (tarefa.getDeadLine().equals(dataAtual)) {
+                    notifications.add(notificationHelper.newExpiringTaskNotification(tarefa, 0));
+                }
+            }
+            notificationHelper.createExpiringTaskNotificationsGroup(notifications);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        List<Notification> notifications = new ArrayList<>();
-        for (TodoItem tarefa : tarefasUsuarioLogado) {
-            // Se o prazo da tarefa for a data atual, cria uma notificação relacionada
-            if (tarefa.getDeadLine().equals(dataAtual)) {
-                notifications.add(notificationHelper.newExpiringTaskNotification(tarefa, 0));
-            }
-        }
-
-        notificationHelper.createExpiringTaskNotificationsGroup(notifications);
     }
 }

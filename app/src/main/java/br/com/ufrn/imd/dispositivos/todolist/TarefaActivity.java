@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -195,7 +196,7 @@ public class TarefaActivity extends AppCompatActivity
      */
     private void setAlarmForNotifications() {
         Intent intent = new Intent(this, NotificationScheduledReciever.class);
-        // `FLAG_UPDATE_CURRENT` indica que a intenção pendente criada pode ser atualizada no futuro
+        // FLAG_UPDATE_CURRENT indica que a intenção pendente criada pode ser atualizada no futuro
         PendingIntent alarmIntent = PendingIntent
                 .getBroadcast( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
@@ -206,13 +207,15 @@ public class TarefaActivity extends AppCompatActivity
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        // AlarmManager.RTC_WAKEUP garante que o alarme será acionado mesmo que o dispositivo entre no modo de suspensão
+        // AlarmManager.INTERVAL_DAY indica que a periocidade é diária
         // O alarme será acionado todos os dias no horário definido em `calender`
-        // `RTC_WAKEUP` garante que o alarme será acionado mesmo que o dispositivo entre no modo de suspensão
 //        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
 //                AlarmManager.INTERVAL_DAY, alarmIntent);
 
-        // Com intervalo de 30 segundos para teste
+        // Com intervalo de 1 minuto para teste
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                1000 * 30, alarmIntent);
+                1000 * 60, alarmIntent);
+        Log.i("NOTI", "Alarme de notificação agendada criado");
     }
 }

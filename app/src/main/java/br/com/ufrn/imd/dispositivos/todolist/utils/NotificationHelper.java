@@ -60,7 +60,7 @@ public class NotificationHelper {
                 text = "amanhã";
                 break;
             default:
-                text = " em " + daysRemaning + " dias";
+                text = "em " + daysRemaning + " dias";
         }
 
         return text;
