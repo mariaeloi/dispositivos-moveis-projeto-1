@@ -287,8 +287,7 @@ public class TarefaActivity extends AppCompatActivity
                 while ((linha = reader.readLine()) != null) {
                     buffer.append(linha);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return buffer.toString();
@@ -304,15 +303,15 @@ public class TarefaActivity extends AppCompatActivity
             try {
                 JSONObject jo = new JSONObject(s);
                 result = jo.getJSONObject("hourly").getJSONArray("temperature_2m").getString(0);
-            }
-            catch (Exception e) {
-                e.printStackTrace();;
+            } catch (Exception e) {
+                e.printStackTrace();
+                ;
             }
 
             clima = findViewById(R.id.menuclima);
             clima.setTitle(result + " ºC");
         }
-=======
+    }
     /**
      * Define alarme diário para notificar sobre tarefas que o prazo encerra em breve.
      */
