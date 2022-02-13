@@ -2,13 +2,17 @@ package br.com.ufrn.imd.dispositivos.todolist;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.AsyncQueryHandler;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.content.DialogInterface;
@@ -18,14 +22,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import br.com.ufrn.imd.dispositivos.todolist.dao.UsuarioDAO;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
@@ -45,9 +59,14 @@ public class TarefaActivity extends AppCompatActivity
     RecyclerView rvTodoList;
     List<TodoItem> todoItemList;
     List<TodoItem> todoItemListCopy;
-    TodoItemDAO todoItemDAO;
+    ActionMenuItemView clima;
 
     private FloatingActionButton facbnewItem;
+
+    private final static String urlLocal = "https://geocoding-api.open-meteo.com/v1/search?name=Berlin";
+
+    TodoItemDAO todoItemDAO;
+
     private FloatingActionButton facbnewItem2;
     private UsuarioDAO usuarioDAO;
     @Override
@@ -100,6 +119,9 @@ public class TarefaActivity extends AppCompatActivity
             }
         });
 
+        // consumir API de local e depois de clima
+        LocalAPI local = new LocalAPI();
+        local.execute(urlLocal);
         facbnewItem2.setOnClickListener(v-> {
             Intent intent = new Intent(getApplicationContext(), EditUserActivity.class);
             startActivity(intent);
@@ -200,6 +222,96 @@ public class TarefaActivity extends AppCompatActivity
                 .show();
     }
 
+    class LocalAPI extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            InputStream is = null;
+            InputStreamReader isr = null;
+            StringBuffer buffer = null;
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                is = conn.getInputStream();
+                isr = new InputStreamReader(is);
+                BufferedReader reader = new BufferedReader(isr);
+                buffer = new StringBuffer();
+                String linha = "";
+
+                while ((linha = reader.readLine()) != null) {
+                    buffer.append(linha);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            return buffer.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            String lat = "";
+            String lon = "";
+
+            try {
+                JSONObject jo = new JSONObject(s);
+                lat = jo.getJSONArray("results").getJSONObject(0).getString("latitude");
+                lon = jo.getJSONArray("results").getJSONObject(0).getString("longitude");
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();;
+            }
+
+            String urlClima = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lon + "&hourly=temperature_2m";
+            ClimaAPI clima = new ClimaAPI();
+            clima.execute(urlClima);
+        }
+    }
+
+    class ClimaAPI extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            InputStream is = null;
+            InputStreamReader isr = null;
+            StringBuffer buffer = null;
+            try {
+                URL url = new URL(strings[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                is = conn.getInputStream();
+                isr = new InputStreamReader(is);
+                BufferedReader reader = new BufferedReader(isr);
+                buffer = new StringBuffer();
+                String linha = "";
+
+                while ((linha = reader.readLine()) != null) {
+                    buffer.append(linha);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return buffer.toString();
+        }
+
+        @SuppressLint("RestrictedApi")
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            String result = "";
+
+            try {
+                JSONObject jo = new JSONObject(s);
+                result = jo.getJSONObject("hourly").getJSONArray("temperature_2m").getString(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ;
+            }
+
+            clima = findViewById(R.id.menuclima);
+            clima.setTitle(result + " ºC");
+        }
+    }
     /**
      * Define alarme diário para notificar sobre tarefas que o prazo encerra em breve.
      */
