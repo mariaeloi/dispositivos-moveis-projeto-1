@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:text="username" />
+        android:text="@string/usuario_username" />
 
     <EditText
         android:id="@+id/atualizarUsernameTV"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:text="city" />
+        android:text="@string/usuario_city" />
 
     <EditText
         android:id="@+id/atualizarCity"
@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:text="password" />
+        android:text="@string/usuario_password" />
 
     <EditText
         android:id="@+id/atualizarPasswordTV"

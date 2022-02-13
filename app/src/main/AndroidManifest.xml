@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,6 +14,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TodoList">
+
+        <service
+            android:name=".service.NotificationLoginService"
+            android:exported="false" />
+
+        <receiver android:name=".receivers.NotificationScheduledReciever" />
+        <receiver android:name=".receivers.BootCompletedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -20,9 +36,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterUserActivity"/>
-        <activity android:name=".TarefaActivity"/>
-        <activity android:name=".EditUserActivity"/>
+        <activity android:name=".RegisterUserActivity" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".TarefaActivity" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".EditUserActivity" android:parentActivityName=".TarefaActivity"/>
 
     </application>
 

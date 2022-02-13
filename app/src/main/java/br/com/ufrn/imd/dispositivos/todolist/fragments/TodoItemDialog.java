@@ -112,9 +112,9 @@ public class TodoItemDialog extends DialogFragment
             if(title.isEmpty() || description.isEmpty() || deadline.isEmpty()) {
                 Snackbar.make(
                         getView(),
-                        "Please fill out all fields.",
+                        "Por favor, preencha todos os campos",
                         Snackbar.LENGTH_LONG
-                ).setActionTextColor(getResources().getColor(R.color.design_default_color_error)).show();
+                ).show();
                 return;
             }
 

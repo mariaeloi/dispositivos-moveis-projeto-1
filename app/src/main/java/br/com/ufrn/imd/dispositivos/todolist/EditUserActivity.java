@@ -43,7 +43,7 @@ public class EditUserActivity  extends AppCompatActivity {
         confimarDeletarPefilBtn.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Tem certeza disso?")
-                    .setMessage("Essao peração não tem como ser desfeita")
+                    .setMessage("Essa operação não tem como ser desfeita")
 
                     .setPositiveButton("EXCLUIR", (new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

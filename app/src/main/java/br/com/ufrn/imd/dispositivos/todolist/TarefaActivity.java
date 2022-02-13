@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.AsyncQueryHandler;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -32,7 +34,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -41,6 +45,8 @@ import br.com.ufrn.imd.dispositivos.todolist.dao.UsuarioDAO;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
+import br.com.ufrn.imd.dispositivos.todolist.service.NotificationLoginService;
+import br.com.ufrn.imd.dispositivos.todolist.receivers.NotificationScheduledReciever;
 import br.com.ufrn.imd.dispositivos.todolist.dao.TodoItemDAO;
 import br.com.ufrn.imd.dispositivos.todolist.model.Usuario;
 
@@ -120,6 +126,13 @@ public class TarefaActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), EditUserActivity.class);
             startActivity(intent);
         });
+
+        // Intent para notificar sobre as tarefas que encerram no dia atual
+        Intent itNotificationLogin = new Intent(getApplicationContext(), NotificationLoginService.class);
+        itNotificationLogin.putExtra(NotificationLoginService.TASKS, (Serializable) todoItemList);
+        startService(itNotificationLogin);
+
+        this.setAlarmForNotifications();
     }
 
     private void reloadTasks() {
@@ -150,7 +163,7 @@ public class TarefaActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Tarefa cadatrada", Toast.LENGTH_SHORT).show();
             reloadTasks();
         } else {
-            Toast.makeText(getApplicationContext(), "Erro ao cadastrar tarefa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Erro ao tentar cadastrar tarefa", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -160,19 +173,28 @@ public class TarefaActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Tarefa atualizada", Toast.LENGTH_SHORT).show();
             reloadTasks();
         } else {
-            Toast.makeText(getApplicationContext(), "Erro ao atualizar tarefa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Erro ao tentar atualizar tarefa", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void deleteItem(TodoItem todoItem)
     {
-        if(todoItemDAO.delete(todoItem)) {
-            Toast.makeText(getApplicationContext(), "Tarefa removida", Toast.LENGTH_SHORT).show();
-            reloadTasks();
-        } else {
-            Toast.makeText(getApplicationContext(), "Erro ao remover tarefa", Toast.LENGTH_SHORT).show();
-        }
+        new AlertDialog.Builder(this)
+                .setTitle("Remover tarefa")
+                .setMessage("Tem certeza que deseja remover \"" + todoItem.getTitle() + "\"?")
+                .setPositiveButton("REMOVER", (new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(todoItemDAO.delete(todoItem)) {
+                            Toast.makeText(getApplicationContext(), "Tarefa removida", Toast.LENGTH_SHORT).show();
+                            reloadTasks();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Erro ao tentar remover tarefa", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }))
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -290,5 +312,32 @@ public class TarefaActivity extends AppCompatActivity
             clima = findViewById(R.id.menuclima);
             clima.setTitle(result + " ºC");
         }
+=======
+    /**
+     * Define alarme diário para notificar sobre tarefas que o prazo encerra em breve.
+     */
+    private void setAlarmForNotifications() {
+        Intent intent = new Intent(this, NotificationScheduledReciever.class);
+        // FLAG_UPDATE_CURRENT indica que a intenção pendente criada pode ser atualizada no futuro
+        PendingIntent alarmIntent = PendingIntent
+                .getBroadcast( this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+        // Define o alarme para iniciar aproximadamente às 8:00 da manhã
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis( System.currentTimeMillis() );
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // AlarmManager.RTC_WAKEUP garante que o alarme será acionado mesmo que o dispositivo entre no modo de suspensão
+        // AlarmManager.INTERVAL_DAY indica que a periocidade é diária
+        // O alarme será acionado todos os dias no horário definido em `calender`
+//        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY, alarmIntent);
+
+        // Com intervalo de 1 minuto para teste
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000 * 60, alarmIntent);
+        Log.i("INFO NOTI", "Alarme de notificação agendada criado");
     }
 }
