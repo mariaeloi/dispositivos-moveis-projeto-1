@@ -34,9 +34,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterUserActivity"/>
-        <activity android:name=".TarefaActivity"/>
-        <activity android:name=".EditUserActivity"/>
+        <activity android:name=".RegisterUserActivity" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".TarefaActivity" android:parentActivityName=".MainActivity"/>
+        <activity android:name=".EditUserActivity" android:parentActivityName=".TarefaActivity"/>
 
     </application>
 

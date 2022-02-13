@@ -3,7 +3,9 @@ package br.com.ufrn.imd.dispositivos.todolist.utils;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -12,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 import java.util.List;
 
 import br.com.ufrn.imd.dispositivos.todolist.R;
+import br.com.ufrn.imd.dispositivos.todolist.TarefaActivity;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 
 public class NotificationHelper {
@@ -41,13 +44,23 @@ public class NotificationHelper {
     }
 
     public Notification newExpiringTaskNotification(TodoItem item, int daysRemaning) {
-        return new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)
                 .setContentTitle(item.getTitle())
                 .setContentText("O prazo da tarefa \"" + item.getTitle() + "\" encerra "
                         + this.daysRemaningToString(daysRemaning))
-                .setGroup(GROUP_KEY)
-                .build();
+                .setGroup(GROUP_KEY);
+
+        Intent acaoAoClicarNaNotificacao = new Intent(context, TarefaActivity.class);
+        PendingIntent acaoPendente = PendingIntent.getActivity(
+                context,
+                0,
+                acaoAoClicarNaNotificacao,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        notificationBuilder.setContentIntent(acaoPendente);
+
+        return notificationBuilder.build();
     }
 
     private String daysRemaningToString(int daysRemaning) {

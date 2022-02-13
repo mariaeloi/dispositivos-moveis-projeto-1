@@ -129,15 +129,15 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
             if(title.isEmpty() || description.isEmpty() || deadline.isEmpty()) {
                 Snackbar.make(
                         getView(),
-                        "Please fill out all fields.",
+                        "Por favor, preencha todos os campos",
                         Snackbar.LENGTH_LONG
-                ).setActionTextColor(getResources().getColor(R.color.design_default_color_error)).show();
+                ).show();
                 return;
             }
 
             itemSelected.setTitle(title);
             itemSelected.setDescription(description);
-            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             try {
                 itemSelected.setDeadLine(formatter.parse(deadline));
             } catch (ParseException e) {
@@ -169,7 +169,7 @@ public class EditItemFragment extends DialogFragment implements DatePickerFragme
 
     @Override
     public void setDate(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         btnDeadLine.setText(formatter.format(date));
     }
 
