@@ -141,7 +141,7 @@ public class TarefaActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Tarefa cadatrada", Toast.LENGTH_SHORT).show();
             reloadTasks();
         } else {
-            Toast.makeText(getApplicationContext(), "Erro ao cadastrar tarefa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Erro ao tentar cadastrar tarefa", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -151,19 +151,28 @@ public class TarefaActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Tarefa atualizada", Toast.LENGTH_SHORT).show();
             reloadTasks();
         } else {
-            Toast.makeText(getApplicationContext(), "Erro ao atualizar tarefa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Erro ao tentar atualizar tarefa", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void deleteItem(TodoItem todoItem)
     {
-        if(todoItemDAO.delete(todoItem)) {
-            Toast.makeText(getApplicationContext(), "Tarefa removida", Toast.LENGTH_SHORT).show();
-            reloadTasks();
-        } else {
-            Toast.makeText(getApplicationContext(), "Erro ao remover tarefa", Toast.LENGTH_SHORT).show();
-        }
+        new AlertDialog.Builder(this)
+                .setTitle("Remover tarefa")
+                .setMessage("Tem certeza que deseja remover \"" + todoItem.getTitle() + "\"?")
+                .setPositiveButton("REMOVER", (new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(todoItemDAO.delete(todoItem)) {
+                            Toast.makeText(getApplicationContext(), "Tarefa removida", Toast.LENGTH_SHORT).show();
+                            reloadTasks();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Erro ao tentar remover tarefa", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }))
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
