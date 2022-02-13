@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.ufrn.imd.dispositivos.todolist">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,13 @@
             android:name=".service.NotificationLoginService"
             android:exported="false" />
 
-        <receiver android:name=".utils.NotificationScheduledReciever" />
+        <receiver android:name=".receivers.NotificationScheduledReciever" />
+        <receiver android:name=".receivers.BootCompletedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".MainActivity"

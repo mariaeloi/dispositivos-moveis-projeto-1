@@ -1,4 +1,4 @@
-package br.com.ufrn.imd.dispositivos.todolist.utils;
+package br.com.ufrn.imd.dispositivos.todolist.receivers;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -18,6 +18,7 @@ import br.com.ufrn.imd.dispositivos.todolist.dao.TodoItemDAO;
 import br.com.ufrn.imd.dispositivos.todolist.dao.UsuarioDAO;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 import br.com.ufrn.imd.dispositivos.todolist.model.Usuario;
+import br.com.ufrn.imd.dispositivos.todolist.utils.NotificationHelper;
 
 public class NotificationScheduledReciever extends BroadcastReceiver {
     private static final SimpleDateFormat FORMATADOR_DATA = new SimpleDateFormat("dd/MM/yyyy");
@@ -30,7 +31,7 @@ public class NotificationScheduledReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("NOTI", "Tentando realizar notificação agendada");
+        Log.i("INFO NOTI", "Tentando realizar notificação agendada");
 
         UsuarioDAO usuarioDAO = new UsuarioDAO(context);
         if(usuarioDAO.usuariosLogados() == 1) {
@@ -55,12 +56,12 @@ public class NotificationScheduledReciever extends BroadcastReceiver {
                         notifications.add(notificationHelper.newExpiringTaskNotification(tarefa, diasRestantes));
                 }
                 notificationHelper.createExpiringTaskNotificationsGroup(notifications);
-                Log.i("NOTI", "Criação da notificação finalizada");
+                Log.i("INFO NOTI", "Criação da notificação finalizada");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            Log.e("NOTI", "Erro ao tentar realizar notificação agendada: nenhum usuário logado");
+            Log.e("INFO NOTI", "Erro ao tentar realizar notificação agendada: nenhum usuário logado");
 
             // Cancelar alarme se não houver nenhum usuário logado
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -69,7 +70,7 @@ public class NotificationScheduledReciever extends BroadcastReceiver {
                             PendingIntent.FLAG_NO_CREATE);
             if (pendingIntent != null && alarmManager != null) {
                 alarmManager.cancel(pendingIntent);
-                Log.i("NOTI", "Alarme de notificação agendada cancelado");
+                Log.i("INFO NOTI", "Alarme de notificação agendada cancelado");
             }
         }
     }

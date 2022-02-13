@@ -32,7 +32,7 @@ import br.com.ufrn.imd.dispositivos.todolist.fragments.EditItemFragment;
 import br.com.ufrn.imd.dispositivos.todolist.fragments.TodoItemDialog;
 import br.com.ufrn.imd.dispositivos.todolist.model.TodoItem;
 import br.com.ufrn.imd.dispositivos.todolist.service.NotificationLoginService;
-import br.com.ufrn.imd.dispositivos.todolist.utils.NotificationScheduledReciever;
+import br.com.ufrn.imd.dispositivos.todolist.receivers.NotificationScheduledReciever;
 import br.com.ufrn.imd.dispositivos.todolist.dao.TodoItemDAO;
 import br.com.ufrn.imd.dispositivos.todolist.model.Usuario;
 
@@ -216,6 +216,6 @@ public class TarefaActivity extends AppCompatActivity
         // Com intervalo de 1 minuto para teste
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 1000 * 60, alarmIntent);
-        Log.i("NOTI", "Alarme de notificação agendada criado");
+        Log.i("INFO NOTI", "Alarme de notificação agendada criado");
     }
 }
